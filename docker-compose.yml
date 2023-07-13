@@ -1,0 +1,35 @@
+version: '3'
+services:
+  backend:
+    container_name: backend
+    
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=db;Database=TP-Provisioning;Username=postgres;Password=topadmin2023"
+  db:
+    container_name: db
+    image: postgres:latest
+    restart: always
+
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=topadmin2023
+      - POSTGRES_DB=TP-Provisioning
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_volume_local:/var/lib/postgresql/data:rw
+
+volumes:
+  postgres_volume_local:
+    external: true
+
+networks:
+  aspnetcoreapp-network:
+    driver: bridge
